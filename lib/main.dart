@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Journeys in Middle-earth Companion',
+      title: 'Jornadas na Terra Média',
       theme: ThemeData(
         primarySwatch: Colors.brown,
         appBarTheme: AppBarTheme(

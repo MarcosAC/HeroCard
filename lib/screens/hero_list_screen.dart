@@ -4,7 +4,7 @@ import '../viewmodels/hero_viewmodel.dart';
 import 'hero_detail_screen.dart';
 
 class HeroListScreen extends StatefulWidget {
-  final HeroViewModel viewModel; // The ViewModel will be passed to the View
+  final HeroViewModel viewModel;
 
   const HeroListScreen({super.key, required this.viewModel});
 
@@ -13,43 +13,38 @@ class HeroListScreen extends StatefulWidget {
 }
 
 class _HeroListScreenState extends State<HeroListScreen> {
-  // This screen's UI will observe changes in the ViewModel's ValueNotifiers.
-
-  // Navigates to the detail screen to create or edit a hero
-  void _navigateToHeroDetail({models.Hero? hero}) async { // <<< Usando models.Hero
-    final models.Hero? result = await Navigator.push( // <<< Usando models.Hero
+  void _navigateToHeroDetail({models.Hero? hero}) async {
+    final models.Hero? result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => HeroDetailScreen(hero: hero),
       ),
     );
 
-    // If there's a result, the ViewModel is notified to persist the change
     if (result != null) {
       if (hero == null) {
-        widget.viewModel.addHero(result); // Add new hero
+        widget.viewModel.addHero(result);
       } else {
-        widget.viewModel.updateHero(result); // Update existing hero
+        widget.viewModel.updateHero(result);
       }
     }
   }
 
-  // Deletes a hero
   void _deleteHero(String heroId, String heroName) async {
     bool confirmDelete = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirm Deletion'),
-          content: Text('Are you sure you want to delete "$heroName"?'),
-          actions: <Widget>[
+          title: const Text('Confirmar exclusão'),
+          content: Text('Tem certeza de que deseja excluir "$heroName"?'),
+          actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
               child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+              child: const Text('Excluir', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -57,10 +52,9 @@ class _HeroListScreenState extends State<HeroListScreen> {
     );
 
     if (confirmDelete == true) {
-      // Trigger the delete action in the ViewModel
       widget.viewModel.deleteHero(heroId);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('"$heroName" deleted!')),
+        SnackBar(content: Text('"$heroName" excluído!')),
       );
     }
   }
@@ -69,18 +63,16 @@ class _HeroListScreenState extends State<HeroListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Journeys in Middle-earth: Heroes'),
+        title: const Text('Jornadas na Terra-média: Heróis'),
         backgroundColor: Colors.brown[800],
       ),
-      // ValueListenableBuilder to observe the loading state
       body: ValueListenableBuilder<bool>(
         valueListenable: widget.viewModel.isLoadingListenable,
         builder: (context, isLoading, child) {
           if (isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          // ValueListenableBuilder to observe the list of heroes
-          return ValueListenableBuilder<List<models.Hero>>( // <<< Usando models.Hero
+          return ValueListenableBuilder<List<models.Hero>>(
             valueListenable: widget.viewModel.heroesListenable,
             builder: (context, heroes, child) {
               if (heroes.isEmpty) {
@@ -91,7 +83,7 @@ class _HeroListScreenState extends State<HeroListScreen> {
                       Icon(Icons.person_add_alt_1, size: 80, color: Colors.grey[400]),
                       const SizedBox(height: 16),
                       Text(
-                        'No heroes found.\nCreate a new one to get started!',
+                        'Nenhum herói encontrado.\nCrie um novo para começar!',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 18, color: Colors.grey[600]),
                       ),
@@ -103,7 +95,7 @@ class _HeroListScreenState extends State<HeroListScreen> {
                   padding: const EdgeInsets.all(8.0),
                   itemCount: heroes.length,
                   itemBuilder: (context, index) {
-                    final hero = heroes[index]; // <<< hero agora é models.Hero
+                    final hero = heroes[index];
                     return Card(
                       elevation: 4,
                       margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -154,7 +146,7 @@ class _HeroListScreenState extends State<HeroListScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToHeroDetail(), // Opens to create new hero
+        onPressed: () => _navigateToHeroDetail(),
         backgroundColor: Colors.brown[700],
         child: const Icon(Icons.add, color: Colors.white),
       ),

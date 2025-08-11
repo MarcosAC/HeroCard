@@ -112,51 +112,53 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add New Item'),
+          title: const Text('Adicionar novo item'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
+            children: [
               TextFormField(
                 controller: _newItemNameController,
-                decoration: const InputDecoration(labelText: 'Item Name'),
+                decoration: const InputDecoration(labelText: 'Nome do item'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Field is required';
+                    return 'O campo é obrigatório';
                   }
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _newItemTypeController,
-                decoration: const InputDecoration(labelText: 'Type (e.g., Weapon, Armor)'),
+                decoration: const InputDecoration(labelText: 'Tipo (por exemplo, arma, armadura)'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Field is required';
+                    return 'O campo é obrigatório';
                   }
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
               TextField(
                 controller: _newItemDescriptionController,
-                decoration: const InputDecoration(labelText: 'Description (Optional)'),
+                decoration: const InputDecoration(labelText: 'Descrição (Opcional)'),
                 maxLines: 2,
               ),
             ],
           ),
-          actions: <Widget>[
+          actions: [
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              child: const Text('Add'),
+              child: const Text('Adicionar'),
               onPressed: () {
                 if (_newItemNameController.text.isNotEmpty &&
                     _newItemTypeController.text.isNotEmpty) {
                   final newItem = Item(
-                    id: uuid.v4(), // Uses the UUID generator
+                    id: uuid.v4(),
                     name: _newItemNameController.text,
                     type: _newItemTypeController.text,
                     description: _newItemDescriptionController.text.isEmpty
@@ -172,7 +174,7 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   Navigator.of(context).pop();
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Item Name and Type are required.')),
+                    const SnackBar(content: Text('Nome e tipo do item são obrigatórios.')),
                   );
                 }
               },
@@ -195,7 +197,7 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.hero == null ? 'New Hero' : 'Edit Hero'),
+        title: Text(widget.hero == null ? 'Novo Herói': 'Editar Herói'),
         backgroundColor: Colors.brown[800],
         actions: [
           IconButton(
@@ -210,53 +212,57 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+            children: [
               Text(
-                'Basic Information',
+                'Informações Básicas',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               ),
               const Divider(),
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Hero Name'),
+                decoration: const InputDecoration(labelText: 'Nome do herói'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the hero\'s name';
+                    return 'Por favor, insira o nome do herói';
                   }
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _heroNameController,
-                decoration: const InputDecoration(labelText: 'Hero Type (e.g., Aragorn)'),
+                decoration: const InputDecoration(labelText: 'Tipo de herói (por exemplo, Aragorn)'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the Hero Type';
+                    return 'Por favor, insira o tipo de herói';
                   }
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _roleController,
-                decoration: const InputDecoration(labelText: 'Role (e.g., Bard)'),
+                decoration: const InputDecoration(labelText: 'Papel (por exemplo, Bardo)'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the hero\'s role';
+                    return 'Por favor, insira o papel do herói';
                   }
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _currentCampaignController,
-                decoration: const InputDecoration(labelText: 'Current Campaign'),
+                decoration: const InputDecoration(labelText: 'Campanha atual'),
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _currentChapterController,
-                decoration: const InputDecoration(labelText: 'Current Chapter'),
+                decoration: const InputDecoration(labelText: 'Capítulo Atual'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
-                    return 'Please enter a valid number';
+                    return 'Por favor, insira um número válido';
                   }
                   return null;
                 },
@@ -264,7 +270,7 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
               const SizedBox(height: 24),
 
               Text(
-                'Attributes',
+                'Atributos',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               ),
               const Divider(),
@@ -273,11 +279,11 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _strengthController,
-                      decoration: const InputDecoration(labelText: 'Strength'),
+                      decoration: const InputDecoration(labelText: 'Força'),
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
-                          return 'Invalid number';
+                          return 'Número inválido';
                         }
                         return null;
                       },
@@ -287,11 +293,11 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _agilityController,
-                      decoration: const InputDecoration(labelText: 'Agility'),
+                      decoration: const InputDecoration(labelText: 'Agilidade'),
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
-                          return 'Invalid number';
+                          return 'Número inválido';
                         }
                         return null;
                       },
@@ -301,11 +307,11 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _wisdomController,
-                      decoration: const InputDecoration(labelText: 'Wisdom'),
+                      decoration: const InputDecoration(labelText: 'Sabedoria'),
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
-                          return 'Invalid number';
+                          return 'Número inválido';
                         }
                         return null;
                       },
@@ -313,16 +319,17 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
                       controller: _maxHealthController,
-                      decoration: const InputDecoration(labelText: 'Max Health'),
+                      decoration: const InputDecoration(labelText: 'Saúde máxima'),
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
-                          return 'Invalid number';
+                          return 'Número inválido';
                         }
                         return null;
                       },
@@ -332,11 +339,11 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _currentHealthController,
-                      decoration: const InputDecoration(labelText: 'Current Health'),
+                      decoration: const InputDecoration(labelText: 'Saúde Atual'),
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
-                          return 'Invalid number';
+                          return 'Número inválido';
                         }
                         return null;
                       },
@@ -344,16 +351,17 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
                       controller: _maxFearController,
-                      decoration: const InputDecoration(labelText: 'Max Fear'),
+                      decoration: const InputDecoration(labelText: 'Medo máximo'),
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
-                          return 'Invalid number';
+                          return 'Número inválido';
                         }
                         return null;
                       },
@@ -363,11 +371,11 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _currentFearController,
-                      decoration: const InputDecoration(labelText: 'Current Fear'),
+                      decoration: const InputDecoration(labelText: 'Medo Atual'),
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
-                          return 'Invalid number';
+                          return 'Número inválido';
                         }
                         return null;
                       },
@@ -375,30 +383,30 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _knowledgeController,
-                decoration: const InputDecoration(labelText: 'Knowledge'),
+                decoration: const InputDecoration(labelText: 'Conhecimento'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
-                    return 'Invalid number';
+                    return 'Número inválido';
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 24),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Inventory',
+                    'Inventário',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   ElevatedButton.icon(
                     onPressed: _showAddItemDialog,
                     icon: const Icon(Icons.add),
-                    label: const Text('Add Item'),
+                    label: const Text('Adicionar item'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.brown[700],
                       foregroundColor: Colors.white,
@@ -410,7 +418,7 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
               _editingHero.inventory.isEmpty
                   ? const Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Text('No items in inventory.'),
+                child: Text('Nenhum item no inventário.'),
               )
                   : ListView.builder(
                 shrinkWrap: true,
@@ -432,20 +440,19 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                 },
               ),
               const SizedBox(height: 24),
-
               Text(
-                'Skill Deck (To be implemented)',
+                'Baralho de Habilidades (a ser implementado)',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               ),
               const Divider(),
-              const Text('Here you can add the logic and UI to manage the hero\'s skill deck.'),
+              const Text('Aqui você pode adicionar a lógica e a interface do usuário para gerenciar o baralho de habilidades do herói.'),
               const SizedBox(height: 16),
               Text(
-                'Special Abilities/Titles (To be implemented)',
+                'Habilidades/Títulos Especiais (A serem implementados)',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               ),
               const Divider(),
-              const Text('Here you can add hero abilities and acquired titles.'),
+              const Text('Aqui você pode adicionar habilidades de heróis e títulos adquiridos.'),
             ],
           ),
         ),
