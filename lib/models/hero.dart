@@ -1,4 +1,6 @@
 import 'item.dart';
+import 'skillcard.dart';
+import 'specialability.dart';
 
 class Hero {
   final String id;
@@ -19,6 +21,8 @@ class Hero {
   final int knowledge;
 
   final List<Item> inventory;
+  final List<SkillCard> skillDeck;
+  final List<SpecialAbility> specialAbilities;
 
   const Hero({
     required this.id,
@@ -36,6 +40,8 @@ class Hero {
     this.currentFear = 0,
     this.knowledge = 0,
     this.inventory = const [],
+    this.skillDeck = const [],
+    this.specialAbilities = const [],
   });
 
   // Converte um objeto Hero para um mapa que pode ser armazenado no banco de dados
@@ -55,12 +61,14 @@ class Hero {
       'maxFear': maxFear,
       'currentFear': currentFear,
       'knowledge': knowledge,
-      // O inventário será salvo em uma tabela separada e relacionado pelo ID do herói
     };
   }
 
   // Cria um objeto Hero a partir de um mapa lido do banco de dados
-  factory Hero.fromMap(Map<String, dynamic> map, {List<Item>? inventory}) {
+  factory Hero.fromMap(Map<String, dynamic> map,
+      {List<Item>? inventory,
+       List<SkillCard>? skillDeck,
+       List<SpecialAbility>? specialAbilities}) {
     return Hero(
       id: map['id'],
       name: map['name'],
@@ -76,7 +84,9 @@ class Hero {
       maxFear: map['maxFear'] ?? 0,
       currentFear: map['currentFear'] ?? 0,
       knowledge: map['knowledge'] ?? 0,
-      inventory: inventory ?? const [], // Associa o inventário carregado separadamente
+      inventory: inventory ?? const [],
+      skillDeck: skillDeck ?? const [],
+      specialAbilities: specialAbilities ?? const [],
     );
   }
 
@@ -97,6 +107,8 @@ class Hero {
     int? currentFear,
     int? knowledge,
     List<Item>? inventory,
+    List<SkillCard>? skillDeck,
+    List<SpecialAbility>? specialAbilities,
   }) {
     return Hero(
       id: id ?? this.id,
@@ -114,6 +126,8 @@ class Hero {
       currentFear: currentFear ?? this.currentFear,
       knowledge: knowledge ?? this.knowledge,
       inventory: inventory ?? this.inventory,
+      skillDeck: skillDeck ?? this.skillDeck,
+      specialAbilities: specialAbilities ?? this.specialAbilities,
     );
   }
 }

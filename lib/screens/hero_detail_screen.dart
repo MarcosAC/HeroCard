@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../models/hero.dart' as models;
 import '../models/item.dart';
+import '../models/skillcard.dart';
+import '../models/specialability.dart';
 
 const Uuid uuid = Uuid();
 
 class HeroDetailScreen extends StatefulWidget {
   final models.Hero? hero;
+  final SkillCard? skillCard;
+  final SpecialAbility? specialAbility;
 
-  const HeroDetailScreen({super.key, this.hero});
+  const HeroDetailScreen({super.key, this.hero, this.skillCard, this.specialAbility});
 
   @override
   State<HeroDetailScreen> createState() => _HeroDetailScreenState();
@@ -36,6 +40,13 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
   late TextEditingController _newItemTypeController;
   late TextEditingController _newItemDescriptionController;
 
+  late TextEditingController _newSkillNameController;
+  late TextEditingController _newSkillDescriptionController;
+
+  late TextEditingController _newAbilityNameController;
+  late TextEditingController _newAbilityTypeController;
+  late TextEditingController _newAbilityDescriptionController;
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +69,13 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
     _newItemNameController = TextEditingController();
     _newItemTypeController = TextEditingController();
     _newItemDescriptionController = TextEditingController();
+
+    _newSkillNameController = TextEditingController();
+    _newSkillDescriptionController = TextEditingController();
+
+    _newAbilityNameController = TextEditingController();
+    _newAbilityTypeController = TextEditingController();
+    _newAbilityDescriptionController = TextEditingController();
   }
 
   @override
@@ -193,6 +211,174 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
     });
   }
 
+  void _showAddSkillCardDialog() {
+    _newSkillNameController.clear();
+    _newSkillDescriptionController.clear();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add New Skill Card'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextFormField(
+                controller: _newSkillNameController,
+                decoration: const InputDecoration(labelText: 'Skill Name'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Field is required';
+                  }
+                  return null;
+                },
+              ),
+              TextField(
+                controller: _newSkillDescriptionController,
+                decoration: const InputDecoration(labelText: 'Description (Optional)'),
+                maxLines: 2,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Add'),
+              onPressed: () {
+                if (_newSkillNameController.text.isNotEmpty) {
+                  final newSkill = SkillCard(
+                    id: uuid.v4(),
+                    name: _newSkillNameController.text,
+                    description: _newSkillDescriptionController.text.isEmpty
+                        ? null
+                        : _newSkillDescriptionController.text,
+                  );
+
+                  setState(() {
+                    _editingHero = _editingHero.copyWith(
+                      skillDeck: List.from(_editingHero.skillDeck)..add(newSkill),
+                    );
+                  });
+                  Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Skill Name is required.')),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _removeSkillCardFromLocalList(SkillCard skillCard) {
+    setState(() {
+      _editingHero = _editingHero.copyWith(
+        skillDeck: List.from(_editingHero.skillDeck)..removeWhere((s) => s.id == skillCard.id),
+      );
+    });
+  }
+
+  void _showAddSpecialAbilityDialog() {
+    _newAbilityNameController.clear();
+    _newAbilityTypeController.clear();
+    _newAbilityDescriptionController.clear();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add New Special Ability/Title'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextFormField(
+                controller: _newAbilityNameController,
+                decoration: const InputDecoration(labelText: 'Ability/Title Name'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Field is required';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _newAbilityTypeController,
+                decoration: const InputDecoration(labelText: 'Type (e.g., Ability, Title)'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Field is required';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _newAbilityDescriptionController,
+                decoration: const InputDecoration(labelText: 'Description'),
+                maxLines: 3,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Field is required';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Add'),
+              onPressed: () {
+                if (_newAbilityNameController.text.isNotEmpty &&
+                    _newAbilityTypeController.text.isNotEmpty &&
+                    _newAbilityDescriptionController.text.isNotEmpty) {
+                  final newAbility = SpecialAbility(
+                    id: uuid.v4(),
+                    name: _newAbilityNameController.text,
+                    type: _newAbilityTypeController.text,
+                    description: _newAbilityDescriptionController.text,
+                  );
+
+                  setState(() {
+                    _editingHero = _editingHero.copyWith(
+                      specialAbilities: List.from(_editingHero.specialAbilities)..add(newAbility),
+                    );
+                  });
+                  Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('All fields for Special Ability/Title are required.')),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _removeSpecialAbilityFromLocalList(SpecialAbility ability) {
+    setState(() {
+      _editingHero = _editingHero.copyWith(
+        specialAbilities: List.from(_editingHero.specialAbilities)..removeWhere((a) => a.id == ability.id),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -269,6 +455,7 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
               ),
               const SizedBox(height: 24),
 
+              // --- Atributos ---
               Text(
                 'Atributos',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -396,6 +583,8 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                 },
               ),
               const SizedBox(height: 24),
+
+              // --- Inventário ---
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -440,23 +629,104 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                 },
               ),
               const SizedBox(height: 24),
-              Text(
-                'Baralho de Habilidades (a ser implementado)',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+
+              // --- Baralho de Habilidades ---
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Skill Deck',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: _showAddSkillCardDialog,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add Skill Card'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.brown[700],
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              _editingHero.skillDeck.isEmpty
+                  ? const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Text('No skill cards in the deck.'),
+              )
+                  : ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _editingHero.skillDeck.length,
+                itemBuilder: (context, index) {
+                  final skill = _editingHero.skillDeck[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: ListTile(
+                      title: Text(skill.name),
+                      subtitle: Text(skill.description ?? 'No description'),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _removeSkillCardFromLocalList(skill),
+                      ),
+                    ),
+                  );
+                },
               ),
               const Divider(),
-              const Text('Aqui você pode adicionar a lógica e a interface do usuário para gerenciar o baralho de habilidades do herói.'),
-              const SizedBox(height: 16),
-              Text(
-                'Habilidades/Títulos Especiais (A serem implementados)',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              const SizedBox(height: 24),
+
+              // --- Special Abilities/Titles ---
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Special Abilities/Titles',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: _showAddSpecialAbilityDialog,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add Ability/Title'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.brown[700],
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ],
               ),
+              //const SizedBox(height: 16),
               const Divider(),
-              const Text('Aqui você pode adicionar habilidades de heróis e títulos adquiridos.'),
+              _editingHero.specialAbilities.isEmpty
+                  ? const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Text('No special abilities or titles.'),
+              )
+                  : ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _editingHero.specialAbilities.length,
+                itemBuilder: (context, index) {
+                  final ability = _editingHero.specialAbilities[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: ListTile(
+                      title: Text(ability.name),
+                      subtitle: Text('${ability.type}: ${ability.description}'),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _removeSpecialAbilityFromLocalList(ability),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: _prepareAndReturnHero,
         backgroundColor: Colors.brown[700],

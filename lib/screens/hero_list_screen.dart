@@ -72,6 +72,7 @@ class _HeroListScreenState extends State<HeroListScreen> {
           if (isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
+
           return ValueListenableBuilder<List<models.Hero>>(
             valueListenable: widget.viewModel.heroesListenable,
             builder: (context, heroes, child) {
@@ -118,7 +119,7 @@ class _HeroListScreenState extends State<HeroListScreen> {
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text(
-                            'Hero: ${hero.heroName} | Role: ${hero.role}'),
+                            'Heroi: ${hero.heroName} | Papel: ${hero.role}'),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

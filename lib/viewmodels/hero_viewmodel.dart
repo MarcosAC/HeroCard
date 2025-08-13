@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import '../models/hero.dart';
 import '../db/database_helper.dart';
 import '../models/item.dart';
+import '../models/skillcard.dart';
+import '../models/specialability.dart';
 
 class HeroViewModel {
   final DatabaseHelper _databaseHelper;
@@ -88,7 +90,6 @@ class HeroViewModel {
 
     final currentHero = _heroesNotifier.value[heroIndex];
     final newInventory = List<Item>.from(currentHero.inventory)..add(item);
-
     final updatedHero = currentHero.copyWith(inventory: newInventory);
 
     await updateHero(updatedHero);
@@ -106,6 +107,64 @@ class HeroViewModel {
       ..removeWhere((item) => item.id == itemId);
 
     final updatedHero = currentHero.copyWith(inventory: newInventory);
+
+    await updateHero(updatedHero);
+  }
+
+  Future<void> addSkillCardToHero(String heroId, SkillCard skillCard) async {
+    final heroIndex = _heroesNotifier.value.indexWhere((h) => h.id == heroId);
+    if (heroIndex == -1) {
+      _errorMessageNotifier.value = 'Hero not found to add skill card.';
+      return;
+    }
+
+    final currentHero = _heroesNotifier.value[heroIndex];
+    final newSkillDeck = List<SkillCard>.from(currentHero.skillDeck)..add(skillCard);
+    final updatedHero = currentHero.copyWith(skillDeck: newSkillDeck);
+
+    await updateHero(updatedHero);
+  }
+
+  Future<void> removeSkillCardFromHero(String heroId, String skillCardId) async {
+    final heroIndex = _heroesNotifier.value.indexWhere((h) => h.id == heroId);
+    if (heroIndex == -1) {
+      _errorMessageNotifier.value = 'Hero not found to remove skill card.';
+      return;
+    }
+
+    final currentHero = _heroesNotifier.value[heroIndex];
+    final newSkillDeck = List<SkillCard>.from(currentHero.skillDeck)
+      ..removeWhere((skill) => skill.id == skillCardId);
+    final updatedHero = currentHero.copyWith(skillDeck: newSkillDeck);
+
+    await updateHero(updatedHero);
+  }
+
+  Future<void> addSpecialAbilityToHero(String heroId, SpecialAbility ability) async {
+    final heroIndex = _heroesNotifier.value.indexWhere((h) => h.id == heroId);
+    if (heroIndex == -1) {
+      _errorMessageNotifier.value = 'Hero not found to add special ability.';
+      return;
+    }
+
+    final currentHero = _heroesNotifier.value[heroIndex];
+    final newAbilities = List<SpecialAbility>.from(currentHero.specialAbilities)..add(ability);
+    final updatedHero = currentHero.copyWith(specialAbilities: newAbilities);
+
+    await updateHero(updatedHero);
+  }
+
+  Future<void> removeSpecialAbilityFromHero(String heroId, String abilityId) async {
+    final heroIndex = _heroesNotifier.value.indexWhere((h) => h.id == heroId);
+    if (heroIndex == -1) {
+      _errorMessageNotifier.value = 'Hero not found to remove special ability.';
+      return;
+    }
+
+    final currentHero = _heroesNotifier.value[heroIndex];
+    final newAbilities = List<SpecialAbility>.from(currentHero.specialAbilities)
+      ..removeWhere((ability) => ability.id == abilityId);
+    final updatedHero = currentHero.copyWith(specialAbilities: newAbilities);
 
     await updateHero(updatedHero);
   }
