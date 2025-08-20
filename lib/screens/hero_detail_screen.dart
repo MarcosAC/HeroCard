@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Hero;
 import 'package:uuid/uuid.dart';
-import '../models/hero.dart' as models;
+import '../models/hero.dart';
 import '../models/item.dart';
 import '../models/skillcard.dart';
 import '../models/specialability.dart';
@@ -8,11 +8,8 @@ import '../models/specialability.dart';
 const Uuid uuid = Uuid();
 
 class HeroDetailScreen extends StatefulWidget {
-  final models.Hero? hero;
-  final SkillCard? skillCard;
-  final SpecialAbility? specialAbility;
-
-  const HeroDetailScreen({super.key, this.hero, this.skillCard, this.specialAbility});
+  final Hero? hero;
+  const HeroDetailScreen({super.key, this.hero});
 
   @override
   State<HeroDetailScreen> createState() => _HeroDetailScreenState();
@@ -20,7 +17,7 @@ class HeroDetailScreen extends StatefulWidget {
 
 class _HeroDetailScreenState extends State<HeroDetailScreen> {
   final _formKey = GlobalKey<FormState>();
-  late models.Hero _editingHero;
+  late Hero _editingHero;
 
   late TextEditingController _nameController;
   late TextEditingController _heroNameController;
@@ -47,10 +44,12 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
   late TextEditingController _newAbilityTypeController;
   late TextEditingController _newAbilityDescriptionController;
 
+
   @override
   void initState() {
     super.initState();
-    _editingHero = widget.hero ?? models.Hero(id: uuid.v4(), name: '', heroName: '', role: '');
+
+    _editingHero = widget.hero ?? Hero(id: uuid.v4(), name: '', heroName: '', role: '');
 
     _nameController = TextEditingController(text: _editingHero.name);
     _heroNameController = TextEditingController(text: _editingHero.heroName);
@@ -96,6 +95,11 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
     _newItemNameController.dispose();
     _newItemTypeController.dispose();
     _newItemDescriptionController.dispose();
+    _newSkillNameController.dispose();
+    _newSkillDescriptionController.dispose();
+    _newAbilityNameController.dispose();
+    _newAbilityTypeController.dispose();
+    _newAbilityDescriptionController.dispose();
     super.dispose();
   }
 
@@ -219,36 +223,37 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add New Skill Card'),
+          title: const Text('Adicionar habilidade'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
+            children: [
               TextFormField(
                 controller: _newSkillNameController,
-                decoration: const InputDecoration(labelText: 'Skill Name'),
+                decoration: const InputDecoration(labelText: 'Nome da habilidade'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Field is required';
+                    return 'O campo é obrigatório';
                   }
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
               TextField(
                 controller: _newSkillDescriptionController,
-                decoration: const InputDecoration(labelText: 'Description (Optional)'),
+                decoration: const InputDecoration(labelText: 'Descrição (Opcional)'),
                 maxLines: 2,
               ),
             ],
           ),
-          actions: <Widget>[
+          actions: [
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              child: const Text('Add'),
+              child: const Text('Adicionar'),
               onPressed: () {
                 if (_newSkillNameController.text.isNotEmpty) {
                   final newSkill = SkillCard(
@@ -267,7 +272,7 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   Navigator.of(context).pop();
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Skill Name is required.')),
+                    const SnackBar(content: Text('Nome da habilidade é obrigatório.')),
                   );
                 }
               },
@@ -295,37 +300,39 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add New Special Ability/Title'),
+          title: const Text('Adicionar habilidade especial/título'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
+            children: [
               TextFormField(
                 controller: _newAbilityNameController,
-                decoration: const InputDecoration(labelText: 'Ability/Title Name'),
+                decoration: const InputDecoration(labelText: 'Nome da Habilidade/Título'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Field is required';
+                    return 'O campo é obrigatório';
                   }
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _newAbilityTypeController,
-                decoration: const InputDecoration(labelText: 'Type (e.g., Ability, Title)'),
+                decoration: const InputDecoration(labelText: 'Tipo (por exemplo, Habilidade, Título)'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Field is required';
+                    return 'O campo é obrigatório';
                   }
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _newAbilityDescriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(labelText: 'Descrição'),
                 maxLines: 3,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Field is required';
+                    return 'O campo é obrigatório';
                   }
                   return null;
                 },
@@ -334,13 +341,13 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              child: const Text('Add'),
+              child: const Text('Adicionar'),
               onPressed: () {
                 if (_newAbilityNameController.text.isNotEmpty &&
                     _newAbilityTypeController.text.isNotEmpty &&
@@ -360,7 +367,7 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   Navigator.of(context).pop();
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('All fields for Special Ability/Title are required.')),
+                    const SnackBar(content: Text('Todos os campos para Habilidade Especial/Título são obrigatórios.')),
                   );
                 }
               },
@@ -378,6 +385,7 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
       );
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -399,6 +407,7 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // --- Basic Information ---
               Text(
                 'Informações Básicas',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -443,7 +452,7 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: _currentChapterController,
+                controller: _currentChapterController, // <<< Usando _currentChapterController
                 decoration: const InputDecoration(labelText: 'Capítulo Atual'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
@@ -588,14 +597,16 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Inventário',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    Expanded(
+                    child: Text(
+                      'Inventário',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   ElevatedButton.icon(
                     onPressed: _showAddItemDialog,
                     icon: const Icon(Icons.add),
-                    label: const Text('Adicionar item'),
+                    label: const Text('Item'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.brown[700],
                       foregroundColor: Colors.white,
@@ -634,14 +645,16 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Skill Deck',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  Expanded(
+                    child: Text(
+                      'Baralho de Habilidades',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   ElevatedButton.icon(
                     onPressed: _showAddSkillCardDialog,
                     icon: const Icon(Icons.add),
-                    label: const Text('Add Skill Card'),
+                    label: const Text('Carta de habilidade'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.brown[700],
                       foregroundColor: Colors.white,
@@ -649,10 +662,11 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   ),
                 ],
               ),
+              const Divider(),
               _editingHero.skillDeck.isEmpty
                   ? const Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Text('No skill cards in the deck.'),
+                child: Text('Não há cartas de habilidade no baralho.'),
               )
                   : ListView.builder(
                 shrinkWrap: true,
@@ -664,7 +678,7 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                     margin: const EdgeInsets.symmetric(vertical: 4.0),
                     child: ListTile(
                       title: Text(skill.name),
-                      subtitle: Text(skill.description ?? 'No description'),
+                      subtitle: Text(skill.description ?? 'Sem descrição'),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () => _removeSkillCardFromLocalList(skill),
@@ -673,21 +687,22 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   );
                 },
               ),
-              const Divider(),
               const SizedBox(height: 24),
 
-              // --- Special Abilities/Titles ---
+              // --- Habilidades/Títulos Especiais ---
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Special Abilities/Titles',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  Expanded(
+                    child: Text(
+                      'Habilidades/Títulos Especiais',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   ElevatedButton.icon(
                     onPressed: _showAddSpecialAbilityDialog,
                     icon: const Icon(Icons.add),
-                    label: const Text('Add Ability/Title'),
+                    label: const Text('Habilidade/Título'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.brown[700],
                       foregroundColor: Colors.white,
@@ -695,12 +710,11 @@ class _HeroDetailScreenState extends State<HeroDetailScreen> {
                   ),
                 ],
               ),
-              //const SizedBox(height: 16),
               const Divider(),
               _editingHero.specialAbilities.isEmpty
                   ? const Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Text('No special abilities or titles.'),
+                child: Text('Nenhuma habilidade ou título especial.'),
               )
                   : ListView.builder(
                 shrinkWrap: true,
